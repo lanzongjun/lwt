@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zmaster.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.zmaster.model.User">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="userName" property="userName" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="realName" property="realName" jdbcType="VARCHAR"/>
+        <result column="business" property="business" jdbcType="VARCHAR"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="headPicture" property="headPicture" jdbcType="VARCHAR"/>
+        <result column="addDate" property="addDate" jdbcType="DATE"/>
+        <result column="updateDate" property="updateDate" jdbcType="DATE"/>
+        <result column="state" property="state" jdbcType="TINYINT"/>
+    </resultMap>
+    <delete id="deleteUser"  parameterType="com.zmaster.model.User">
+          DELETE FROM tb_user WHERE id = #{id, jdbcType=INTEGER}
+    </delete>
+
+    <select id="selectByNameAndPwd" resultMap="BaseResultMap" parameterType="java.lang.String">
+      SELECT * from tb_user  where userName = #{userName, jdbcType=VARCHAR} and password = #{password, jdbcType=VARCHAR} and state = 1
+  </select>
+
+    <select id="selectIsName" resultType="java.lang.Integer" parameterType="java.lang.String">
+        SELECT 1 from tb_user  where userName = #{userName, jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectPasswordByName" resultType="java.lang.String" parameterType="com.zmaster.model.User">
+        SELECT password from tb_user  where userName = #{userName, jdbcType=VARCHAR} AND  email = #{email, jdbcType=VARCHAR}
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+
+        select  count(1) from tb_user
+    </select>
+    <select id="list" resultType="com.zmaster.model.User">
+    select  * from tb_user
+     ORDER BY updateDate desc
+        limit #{start, jdbcType=INTEGER} offset #{end, jdbcType=INTEGER}
+    </select>
+
+    <select id="getUserById" resultType="com.zmaster.model.User" parameterType="com.zmaster.model.User">
+    select  * from tb_user where id = #{id, jdbcType=INTEGER}
+
+    </select>
+
+    <insert id="insert" parameterType="com.zmaster.model.User">
+
+        INSERT INTO tb_user ( userName, password, realName, business, email, headPicture, addDate, updateDate, state)
+        VALUES   (#{userName, jdbcType=VARCHAR}, #{password, jdbcType=VARCHAR},  #{realName, jdbcType=VARCHAR}, #{business, jdbcType=VARCHAR}, #{email, jdbcType=VARCHAR}, null, #{addDate, jdbcType=DATE}, #{updateDate, jdbcType=DATE}, 1)
+    </insert>
+
+    <update id="update" parameterType="com.zmaster.model.User">
+        UPDATE tb_user SET
+        password = #{password, jdbcType=VARCHAR},
+        email = #{email, jdbcType=VARCHAR},
+        realName = #{realName, jdbcType=VARCHAR},
+        business = #{business, jdbcType=VARCHAR},
+        updateDate = #{updateDate, jdbcType=DATE}
+        WHERE   id = #{id, jdbcType=VARCHAR}
+    </update>
+</mapper>
